@@ -202,9 +202,10 @@ def show_camino_a():
             
 
            
-            
+            warnings.warn("Start1")
             rating_matrix, rating_matrix_cp = movie_use_matrix_pivot(sample_df)
             item_vector=[]
+            warnings.warn("Start2")
           
             Ensemble = EnsembleRecommender(sample_df, movies_df,rating_matrix,item_vector)
             print("hey")
