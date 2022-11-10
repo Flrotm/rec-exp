@@ -2,11 +2,12 @@ import pandas as pd
 import numpy as np
 
 from annoy import AnnoyIndex
-
+import warnings
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
 import random
+import streamlit as st
 # Final Recommendation system
 # This is the Ensemble method that combines NCF DL model with MF-ANN model.
 # The ensemble recommender loads and takes recommendations from two pre-trained model,
@@ -30,7 +31,7 @@ class EnsembleRecommender():
         self.movie2movie_encoded = {x: i for i, x in enumerate(self.movie_ids)}
         self.movie_encoded2movie = {i: x for i, x in enumerate(self.movie_ids)}
         self.rating_matrix = rating_matrix
-        self.item_vector = item_vector
+        self.item_vector = []
         
 
     def NCF_recommendation(self,userId,top_k=20):
@@ -96,15 +97,19 @@ class EnsembleRecommender():
         # output: save it in 'rating.ann' 
         #
         # construct a dictionary where movied id contains its vector representation 
-        print("movies_ids",len(self.movie_ids))
-        rating_dictionary = {self.movie_ids[i]: self.item_vector[i] for i in range(19835)} 
-        # ann method
-        f = len(self.item_vector[1])
-        t = AnnoyIndex(f, metric)  # Length of item vector that will be indexed
-        for key in rating_dictionary:
-            t.add_item(key, rating_dictionary.get(key))
-        t.build(num_trees) # 10 trees
-        #t.save('rating.ann')
+        # print("movies_ids",len(self.movie_ids))
+        # rating_dictionary = {self.movie_ids[i]: self.item_vector[i] for i in range(19835)}
+        # #pd.DataFrame(rating_dictionary).to_csv('rating_dictionary.csv')
+        # # ann method
+        # f = len(self.item_vector[1])
+        # t = AnnoyIndex(f, metric)  # Length of item vector that will be indexed
+        # for key in rating_dictionary:
+        #     t.add_item(key, rating_dictionary.get(key))
+        # t.build(num_trees) # 10 trees
+        # t.save('rating.ann')
+        print("ann  done")
+    
+
 
     
     def ANN_recommendation(self,userId, dimension = 14, metric = 'angular',
@@ -115,11 +120,12 @@ class EnsembleRecommender():
         #          top_n   
         # output: a dataframe containing index as 'movieId','title','genre'
         #
-        v = self.item_vector
-        self.ann(metric, num_tree) 
-        f = len(v[1])
-        u = AnnoyIndex(f, metric)
+        warnings.warn("ANN_recommendation is not implemented yet")
+
+        u = AnnoyIndex(14, metric)
         u.load('rating.ann')
+        warnings.warn("Traje ann")
+       
         
         # construct the recommendation for the user
         high_rate_movie, rate = self.get_rated_movies(userId,threshold=threshold)
@@ -135,12 +141,10 @@ class EnsembleRecommender():
                 # get the weighted distance based on rating scores
                 weighted_dist = (np.array(dist[1:])/rate[np.where(high_rate_movie == movieid)]).tolist()
                 distancelist.extend(weighted_dist)  
+        else:
+            st.write("Por lo menos un rating mayor a 4 es necesario para generar recomendaciones")
                 
-            #if more than 20 movies are chosen to recommend to user, choose 20 nearest item for this user
-            if len(movielist) > 20:
-                sorted_recommend = np.array(movielist)[np.array(distancelist).argsort()]
-                movielist = sorted_recommend[:20]
-        
+
         # construct a dataframe for final output
         top_movie_rec = self.movie_df.loc[self.movie_df['movieId'].isin(movielist)].set_index('movieId')
         
