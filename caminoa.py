@@ -182,6 +182,7 @@ def show_camino_a():
     ok = st.button("Generar recomendaciones ")
     if ok:
         with st.spinner('Generando recomendaciones...'):
+            warnings.warn("Start")
             sample_df = pd.read_csv("sample_df.csv")
 
             user_ratings = np.array([rating,rating2,rating3,rating4,rating5])
