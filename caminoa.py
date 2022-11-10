@@ -204,8 +204,8 @@ def show_camino_a():
            
             
             rating_matrix, rating_matrix_cp = movie_use_matrix_pivot(sample_df)
-            item_vector = np.load("item_vector.npy")
-            warnings.warn("Model loaded")
+            item_vector=[]
+          
             Ensemble = EnsembleRecommender(sample_df, movies_df,rating_matrix,item_vector)
             print("hey")
 
