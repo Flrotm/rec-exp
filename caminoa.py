@@ -204,9 +204,7 @@ def show_camino_a():
            
             
             rating_matrix, rating_matrix_cp = movie_use_matrix_pivot(sample_df)
-            filename = os.getcwd() + "/nmf_model.sav"
-            loaded_model = pickle.load(open(filename, 'rb'))
-            item_vector = loaded_model.components_.T
+            item_vector = np.load("item_vector.npy")
             warnings.warn("Model loaded")
             Ensemble = EnsembleRecommender(sample_df, movies_df,rating_matrix,item_vector)
             print("hey")
