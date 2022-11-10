@@ -10,7 +10,8 @@ from caminob import show_camino_b
 from final_model import EnsembleRecommender
 import pickle
 import time
-
+import os
+import warnings
 
 links_df = pd.read_csv("links.csv")
 movies_df = pd.read_csv("movies.csv")
@@ -187,7 +188,7 @@ def show_camino_a():
             rand_number = np.random.randint(0,9)
             user_id = sample_df["userId"].value_counts().tail(10).index.tolist()[rand_number]
             movies_ids = np.array([first_movie_id,second_movie_id,third_movie_id,fourth_movie_id,fifth_movie_id])
-            user_ratings_df = pd.DataFrame({"userId":user_id,"movieId":movies_ids,"rating":user_ratings,"timestamp":time.time()})  
+            user_ratings_df = pd.DataFrame({"userId":user_id,"movieId":movies_ids,"rating":user_ratings,"timestamp":"1346916814"})  
             user_ratings_df = user_ratings_df[["userId","movieId","rating","timestamp"]]
 
             
@@ -202,9 +203,10 @@ def show_camino_a():
            
             
             rating_matrix, rating_matrix_cp = movie_use_matrix_pivot(sample_df)
-            filename = 'nmf_model.sav'
+            filename = os.getcwd() + "/nmf_model.sav"
             loaded_model = pickle.load(open(filename, 'rb'))
             item_vector = loaded_model.components_.T
+            warnings.warn("Model loaded")
             Ensemble = EnsembleRecommender(sample_df, movies_df,rating_matrix,item_vector)
             print("hey")
 
