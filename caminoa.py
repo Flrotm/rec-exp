@@ -50,8 +50,8 @@ def movie_use_matrix_pivot(df_):
     mu_matrix = df_.pivot(index = 'userId', 
                           columns = 'movieId', 
                           values = 'rating').fillna(0)
-    mu_matrix_cp = csr_matrix(mu_matrix.values)
-    return mu_matrix, mu_matrix_cp
+    
+    return mu_matrix
 
 def show_camino_a():
     links_df = pd.read_csv("links.csv")
@@ -202,10 +202,10 @@ def show_camino_a():
             
 
            
-            warnings.warn("Start1")
+            
             rating_matrix, rating_matrix_cp = movie_use_matrix_pivot(sample_df)
+            print(type(rating_matrix))
             item_vector=[]
-            warnings.warn("Start2")
           
             Ensemble = EnsembleRecommender(sample_df, movies_df,rating_matrix,item_vector)
             print("hey")
